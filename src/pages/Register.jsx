@@ -100,7 +100,7 @@ const Register = () => {
 
           <div className="bg-white rounded-xl px-16 py-8 flex flex-col gap-8">
             <h6 className="text-center text-[34px] font-semibold">
-              Job Application Form
+              {userRole == "seeker" ? "Job" : "Employer"} Application Form
             </h6>
             <div className="flex flex-col gap-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
