@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { api } from "@/lib/api-client";
 
 const Login = () => {
-  const [email, setEmail] = useState("companywala@example.com");
+  const [email, setEmail] = useState("companydai@gmail.com");
   const [password, setPassword] = useState("123@pas#Word");
   const { setIsLoggedIn, updateTokens } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -63,7 +63,8 @@ const Login = () => {
         navigate("/jobs");
       }
     } catch (error) {
-      toast.error(`An error occurred: ${error}`);
+      const errMsg = error.response?.data?.detail || "An error occurred!";
+      toast.error(`${errMsg}`);
     }
   };
 

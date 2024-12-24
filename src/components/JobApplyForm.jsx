@@ -41,8 +41,14 @@ const JobApplyForm = () => {
       // }
       toast.success("Job application submitted successfully");
     } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while applying for the job");
+      if (
+        error.response.data.non_field_errors[0] ==
+        "The fields job, applicant must make a unique set."
+      ) {
+        toast.error("You have already applied for this job");
+        return;
+      }
+      toast.error("Couldn't apply for the job");
     }
   };
 

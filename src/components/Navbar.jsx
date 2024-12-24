@@ -156,41 +156,28 @@ import { HiBriefcase } from "react-icons/hi";
 import { LucideLogOut } from "lucide-react";
 import { AuthContext } from "@/context/AuthContext";
 
-const users = [
-  { id: 1, name: "Lalit", isLoggedIn: true, img: assets.reviewer1 },
-  { id: 2, name: "Saurabh", isLoggedIn: false },
-];
-
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  //   // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [userProfile, setUserProfile] = useState("");
-  const { isLoggedIn } = useContext(AuthContext);
-  console.log(isLoggedIn);
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     const userInfo = JSON.parse(localStorage.getItem("user"))[
-  //       "profile_image"
-  //     ];
-  //     setUserProfile(userInfo);
-  //   }
-  // }, [isLoggedIn]);
+  let user = null;
+  let id, profile_image, first_name, last_name;
 
+  const { isLoggedIn } = useContext(AuthContext);
+
+  if (isLoggedIn) {
+    user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      ({ id, profile_image, first_name, last_name } = user);
+    }
+  }
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // // const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
 
   const toggleUserProfile = () => {
     setIsUserProfileOpen(!isUserProfileOpen);
   };
-
-  // const toggleMenu = () => {
-  //   setIsMenuOpen(!isMenuOpen);
-  // };
 
   return (
     <nav className="bg-mainColor w-full fixed z-10">
@@ -245,10 +232,13 @@ const Navbar = () => {
           <div className="relative cursor-pointer" onClick={toggleUserProfile}>
             <Avatar
               className="bg-white text-black rounded-full w-6 h-6 md:w-10 md:h-10 flex items-center justify-center"
-              key={users[0].id}
+              key={id}
             >
-              <AvatarImage src={users[0].img} alt={users[0].name} />
-              <AvatarFallback>LS</AvatarFallback>
+              <AvatarImage src={profile_image} alt={"username"} />
+              <AvatarFallback>
+                {(first_name?.[0] || "").toUpperCase() +
+                  (last_name?.[0] || "").toUpperCase()}{" "}
+              </AvatarFallback>
             </Avatar>
 
             <div
@@ -256,13 +246,13 @@ const Navbar = () => {
                 isUserProfileOpen ? "block" : "hidden"
               } absolute w-40 px-3 py-4 right-0 mt-2 bg-white text-black flex flex-col gap-3 text-sm rounded shadow-boxShadow`}
             >
-              <Link to={`/${users[0].id}/applied-jobs`}>
+              <Link to={`/${id}/applied-jobs`}>
                 <div className="flex items-center gap-2">
                   <HiBriefcase className="size-4" />
                   <span> Applied Jobs</span>
                 </div>
               </Link>
-              <Link to={`/${users[0].id}/settings`}>
+              <Link to={`/${id}/settings`}>
                 <div className="flex items-center gap-2">
                   <LuSettings fill="black" className="text-white" size={16} />
                   <span> Settings</span>

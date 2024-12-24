@@ -44,6 +44,15 @@ const formSchema = z.object({
     .regex(/[@$!%*?&#]/, {
       message: "Password must contain at least one special character.",
     }),
+  profile_image: z
+    .instanceof(File)
+    .optional()
+    .refine((file) => file?.size <= 5 * 1024 * 1024, {
+      message: "Profile image must be smaller than 5MB.",
+    })
+    .refine((file) => file?.type.startsWith("image/"), {
+      message: "Profile image must be an image file.",
+    }),
 });
 
 export function ProfileSettingsForm() {
@@ -60,21 +69,49 @@ export function ProfileSettingsForm() {
     },
   });
 
+  // async function onSubmit(values) {
+  //   const { id } = JSON.parse(localStorage.getItem("user"));
+  //   console.log(id);
+  //   console.log(values);
+  //   const { access } = JSON.parse(localStorage.getItem("authTokens"));
+  //   try {
+  //     const response = await api.patch(`/users/${id}/`, values, {
+  //       headers: {
+  //         Authorization: `Bearer ${access}`,
+  //       },
+  //     });
+  //     toast.success("Profile successfully updated");
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Error updating profile!!");
+  //   }
+  // }
+
   async function onSubmit(values) {
     const { id } = JSON.parse(localStorage.getItem("user"));
-    console.log(id);
-    console.log(values);
     const { access } = JSON.parse(localStorage.getItem("authTokens"));
+
     try {
-      const response = await api.patch(`/users/${id}/`, values, {
+      const formData = new FormData();
+      Object.keys(values).forEach((key) => {
+        if (key === "profile_image" && values[key]) {
+          formData.append(key, values[key]);
+        } else {
+          formData.append(key, values[key]);
+        }
+      });
+
+      const response = await api.patch(`/users/${id}/`, formData, {
         headers: {
           Authorization: `Bearer ${access}`,
+          "Content-Type": "multipart/form-data",
         },
       });
+
       toast.success("Profile successfully updated");
     } catch (error) {
-      console.log(error);
-      toast.error("Error updating profile!!");
+      console.error(error);
+      toast.error("Error updating profile!");
     }
   }
 
@@ -172,17 +209,48 @@ export function ProfileSettingsForm() {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
-              name="image"
+              name="profile_image"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Logo/Profile Picture</FormLabel>
-                  {/* <Label htmlFor="picture">Picture</Label> */}
                   <FormControl>
-                    <Input id="picture" type="file" />
+                    <Input id="picture" type="file" {...field} />
                   </FormControl>
 
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+            <FormField
+              control={form.control}
+              name="profile_image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Profile Picture</FormLabel>
+                  <FormControl>
+                    <input
+                      id="profile_image"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          form.setValue("profile_image", file);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  {form.watch("profile_image") && (
+                    <div className="mt-2">
+                      <img
+                        src={URL.createObjectURL(form.watch("profile_image"))}
+                        alt="Profile Preview"
+                        className="h-20 w-20 object-cover rounded-full"
+                      />
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

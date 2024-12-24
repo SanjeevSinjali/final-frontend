@@ -43,6 +43,9 @@ const AllJobsTable = () => {
 
     fetchJobs();
   }, [access]);
+
+  useEffect(() => {}, [jobs]);
+
   console.log(jobs);
 
   const deleteJob = (id) => async () => {
@@ -55,7 +58,6 @@ const AllJobsTable = () => {
       });
       toast.success("Successfully deleted");
     } catch (error) {
-      console.error(error);
       toast.error("Couldn't delete job");
     }
   };

@@ -12,7 +12,7 @@ const Register = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       const response = await api.get("/company/");
-      const data = await response.json();
+      const data = await response.data;
       setCompanies(data);
     };
     fetchCompanies();
@@ -28,6 +28,7 @@ const Register = () => {
     password: "",
     job_role: "",
     experience: "",
+    skills: "",
   });
 
   const [cvFile, setCvFile] = useState(null);
@@ -58,22 +59,21 @@ const Register = () => {
     }
 
     try {
-      const response = await api.get("/users/", {
-        method: "POST",
-        body: formDataObj,
+      const response = await api.post("/users/", formDataObj, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      if (!response.ok) {
-        const errorData = await response;
-        toast.error(errorData.detail || "Registration failed!");
-        return;
-      }
-
+      console.log(response);
       // const data = await response.json();
       toast.success("Registration successful!");
       navigate("/login");
     } catch (error) {
-      toast.error(`An error occurred :${error}`);
+      console.log(error.response.data);
+      toast.error(
+        `Registration failed! ${JSON.stringify(error.response.data)}`
+      );
     }
   };
 
@@ -246,18 +246,32 @@ const Register = () => {
                   />
                 </div>
                 {userRole === "seeker" && (
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="experience">Previous Experience</label>
-                    <input
-                      id="experience"
-                      name="experience"
-                      placeholder="Previous experience"
-                      // value={formData.password}
-                      onChange={handleChange}
-                      className="px-4 py-2 outline-mainColor border text-sm"
-                      required
-                    />
-                  </div>
+                  <>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="experience">Previous Experience</label>
+                      <input
+                        id="experience"
+                        name="experience"
+                        placeholder="Previous experience"
+                        // value={formData.password}
+                        onChange={handleChange}
+                        type="number"
+                        className="px-4 py-2 outline-mainColor border text-sm"
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="skills">Skills</label>
+                      <input
+                        id="skills"
+                        name="skills"
+                        placeholder="Skills"
+                        onChange={handleChange}
+                        className="px-4 py-2 outline-mainColor border text-sm"
+                        required
+                      />
+                    </div>
+                  </>
                 )}
               </div>
             </div>
