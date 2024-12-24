@@ -73,7 +73,7 @@ function CreateNewJobForm() {
       job_type: "",
       job_level: "",
       schedule: "",
-      description: `Digital Home International Electronics is a leading company in the Electronics Home Appliance sector in Nepal committed to providing our customers with the latest and most innovative Small Home Appliances, Home Electronics, and Home Appliances. Our mission is to enhance the everyday lives of our customers by offering products that combine quality, technology, and value for money. As we continue to grow and expand our operations, we seek a Procurement Manager to join our dynamic team. This role will be pivotal in ensuring the strategic sourcing of products from China, India, and other third countries, aligning with our commitment to excellence and sustainability.`,
+      description: "",
       application_deadline: "",
     },
   });
